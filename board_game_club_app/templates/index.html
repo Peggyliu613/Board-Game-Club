@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy Happy Board Game Club</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="w3-top">
+        <div class="w3-bar w3-black w3-card">
+            <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
+                href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                    class="fa fa-bars"></i></a>
+            <a href="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+            <a href="/events" class="w3-bar-item w3-button w3-padding-large w3-hide-small">EVENTS</a>
+            <div class="w3-dropdown-hover w3-hide-small">
+                <button class="w3-padding-large w3-button" title="More">GAMES <i class="fa fa-caret-down"></i></button>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <a href="/werewolf" class="w3-bar-item w3-button">WEREWOLF</a>
+                    <a href="/avalon" class="w3-bar-item w3-button">AVALON</a>
+                </div>
+            </div>
+            <a href="/tools" class="w3-bar-item w3-button w3-padding-large w3-hide-small">TOOLS</a>
+            {% if 'user' not in request.session or request.session.user == None %}
+            <a href="/login" class="w3-padding-large w3-hide-small w3-right">LOG IN</a>
+            {% else %}
+            <a href="/logout" class="w3-padding-large w3-hide-small w3-right">LOG OUT</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+    <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+        <a href="/events" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">EVENTS</a>
+        <a href="/werewolf" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">WEREWOLF</a>
+        <a href="/avalon" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">AVALON</a>
+        <a href="/tools" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">TOOLS</a>
+        {% if 'user' not in request.session or request.session.user == None %}
+        <a href="/login" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">LOG IN</a>
+        {% else %}
+        <a href="/logout" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">LOG OUT</a>
+        {% endif %}
+    </div>
+
+
+    <!-- Page content -->
+    <div class="w3-content" style="max-width:2000px;margin-top:46px">
+
+        <!-- Automatic Slideshow Images -->
+        <div class="mySlides w3-display-container w3-center">
+            <img src="{% static 'images/home.jpg' %}" style="width:100%">
+            <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+                <h3>White Elephant Christmas Party</h3>
+                <p><b>12.13.2019</b></p>
+            </div>
+        </div>
+        <div class="mySlides w3-display-container w3-center">
+            <img src="{% static 'images/home2.jpg' %}" style="width:100%">
+            <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+                <h3>Halloween Party</h3>
+                <p><b>10.26.2019</b></p>
+            </div>
+        </div>
+
+
+        <!-- The Club Section -->
+        <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px">
+            <h2 class="w3-wide">Happy Happy Board Game Club</h2>
+            <p class="w3-opacity"><i>We love playing board games!</i></p>
+            <p class="w3-justify">We are a group of friends who love playing board games. We have board game events
+                almost every week. Our favorite board games include Werewolf, Avalon and other strategy games. We also
+                host different kinds of party, for instance, halloween party and white elephant gift exchange party. For
+                holidays, we organize trips to various destinations for hiking, sledding; and of course, board games are
+                still a must in our trips. This is a group which shares a lot of fun and laughter. The group welcomes
+                everyone to join us, but keep one thing in mind when playing the board game: don’t trust anyone easily!
+            </p>
+
+
+
+            <script>
+                // Automatic Slideshow - change image every 4 seconds
+                var myIndex = 0;
+                carousel();
+
+                function carousel() {
+                    var i;
+                    var x = document.getElementsByClassName("mySlides");
+                    for (i = 0; i < x.length; i++) {
+                        x[i].style.display = "none";
+                    }
+                    myIndex++;
+                    if (myIndex > x.length) { myIndex = 1 }
+                    x[myIndex - 1].style.display = "block";
+                    setTimeout(carousel, 4000);
+                }
+
+                // Used to toggle the menu on small screens when clicking on the menu button
+                function myFunction() {
+                    var x = document.getElementById("navDemo");
+                    if (x.className.indexOf("w3-show") == -1) {
+                        x.className += " w3-show";
+                    } else {
+                        x.className = x.className.replace(" w3-show", "");
+                    }
+                }
+
+                // When the user clicks anywhere outside of the modal, close it
+                var modal = document.getElementById('ticketModal');
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            </script>
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy Happy Board Game Club</title>
+    <style>
+        body {
+            background-color:black;
+        }
+        input {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type=submit]:hover {
+            border: 1px solid black;
+        }
+
+        .login_container {
+            background-color:white;
+            padding:15px;
+            width: 50%;
+            margin: auto;
+            box-shadow:2px 2px 5px lightgray;
+            border-radius: 10px;
+        }
+
+        .login_container h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login_container">
+        <h1>Log In</h1>
+        {% if messages %}
+        <ul style="color: red;">
+            {% for message in messages %}
+            <li>{{message}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form action="/login_now" method="POST">
+            {% csrf_token %}
+            Email <input type="text" name="email"><br>
+            Password <input type="password" name="password"><br><br>
+            <input type="submit" value="Log In">
+        </form>
+        <form action="/register" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Register">
+        </form>
+
+        <form action="/cancel" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Cancel">
+        </form>
+    </div>
+</body>
+
+</html>

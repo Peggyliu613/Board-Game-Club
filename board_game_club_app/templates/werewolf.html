@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy Happy Board Game Club</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css'%}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+    table, td, th{
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+    table{
+        width: 100%;
+        border-collapse: collapse;
+    }
+</style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="w3-top">
+        <div class="w3-bar w3-black w3-card">
+            <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
+                href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                    class="fa fa-bars"></i></a>
+            <a href="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+            <a href="/events" class="w3-bar-item w3-button w3-padding-large w3-hide-small">EVENTS</a>
+            <div class="w3-dropdown-hover w3-hide-small">
+                <button class="w3-padding-large w3-button" title="More">GAMES <i class="fa fa-caret-down"></i></button>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <a href="/werewolf" class="w3-bar-item w3-button">WEREWOLF</a>
+                    <a href="/avalon" class="w3-bar-item w3-button">AVALON</a>
+                </div>
+            </div>
+            <a href="/tools" class="w3-bar-item w3-button w3-padding-large w3-hide-small">TOOLS</a>
+            {% if 'user' not in request.session or request.session.user == None %}
+            <a href="/login" class="w3-padding-large w3-hide-small w3-right">LOG IN</a>
+            {% else %}
+            <a href="/logout" class="w3-padding-large w3-hide-small w3-right">LOG OUT</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+    <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+        <a href="/events" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">EVENTS</a>
+        <a href="/werewolf" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">WEREWOLF</a>
+        <a href="/avalon" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">AVALON</a>
+        <a href="/tools" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">TOOLS</a>
+        {% if 'user' not in request.session or request.session.user == None %}
+        <a href="/login" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">LOG IN</a>
+        {% else %}
+        <a href="/logout" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">LOG OUT</a>
+        {% endif %}
+    </div>
+
+
+    <!-- The Event Section -->
+    <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px">
+        <h2 class="w3-wide">Game: Werewolf</h2><br>
+        <img src="{% static 'images/werewolf.png' %}" alt="werewolf" width="300px">
+        <h4 class="w3-justify">Rules:</h4>
+        <p class="w3-justify">Werewolf is a deduction game with two sides, an informed minority(werewolves) and an
+            uninformed majority (villagers + special roles). Every is assigned a role at the beginning The game consists
+            of two phases. In the night phase, werewolves decide which player to be killed. In the day phase, all
+            surviving players, including the hidden werewolves among them, debate and discuss to decide whom to be
+            eliminated.</p>
+
+        <p class="w3-justify">Our adopted rule has three sides. Each side usually has a similar number of players.
+            Werewolves: Know each other at night. Together, they pick a player to be killed each night.
+            Villagers: Don’t have any information and aim to eliminate werewolves.
+            Special roles: Each of these characters has his/her own special power. Their goal is as same as villagers,
+            to eliminate all werewolves. Each special roles will be explained in the next section.</p>
+
+        <p class="w3-justify">The goal for villagers and special roles is to eliminate all the werewolves.
+            The goal for werewolves is either to kill all villagers or to kill all special roles.</p>
+
+        <p class="w3-justify">For example, in a game with 4 werewolves, 4 villagers and 4 special roles, werewolves’
+            goal is to either
+            kill all 4 villagers or kill all 4 special roles. The villagers and special roles’ goal is to eliminate all
+            werewolves.</p>
+        <br><br><br>
+
+        <h4 class="w3-justify">Roles using in this game:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Character</th>
+                    <th>Function</th>
+                    <th># of players</th>
+                </tr>
+            </thead>
+            <tbody id="display_table">
+            </tbody>
+        </table>
+        <br><br><br>
+
+        <h4 class="w3-justify">Configuration:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Character</th>
+                    <th>Function</th>
+                    <th># of players</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for character in all_characters %}
+                <tr>
+                    <td><input id="checkbox{{forloop.counter0}}" type="checkbox" name="{{character.id}}"></td>
+                    <td id="character{{forloop.counter0}}">{{character.character}}</td>
+                    <td id="function{{forloop.counter0}}">{{character.function}}</td>
+                    <td><select name="number_of_players" id="number{{forloop.counter0}}">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <input id="add" type="submit" value="Add">
+
+    </div>
+
+    <script>
+        // Used to toggle the menu on small screens when clicking on the menu button
+        function myFunction() {
+            var x = document.getElementById("navDemo");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        var modal = document.getElementById('ticketModal');
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        //
+        $('#add').click(function () {
+            let s = "";
+
+            for (let i = 0; i < {{ all_characters.count }}; i++) {
+                if ($("#checkbox" + i).prop("checked") == true) {
+                    s += "<tr>"
+                        + "<td>" + $("#character" + i).html() + "</td>"
+                        + "<td>" + $("#function" + i).html() + "</td>"
+                        + "<td>" + $("#number" + i).val() + "</td>"
+                        + "</tr>"
+                }
+            }
+            $("#display_table").html(s)
+        })
+        
+    </script>
+</body>
+
+</html>

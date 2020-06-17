@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy Happy Board Game Club</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css'%}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+        #remove_person{
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        #remove_person:hover{
+            border-radius: 10px;
+            transition-duration: 0.2s;
+            border: 1px solid black;
+        } 
+
+        table, td, th{
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="w3-top">
+        <div class="w3-bar w3-black w3-card">
+            <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
+                href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                    class="fa fa-bars"></i></a>
+            <a href="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+            <a href="/events" class="w3-bar-item w3-button w3-padding-large w3-hide-small">EVENTS</a>
+            <div class="w3-dropdown-hover w3-hide-small">
+                <button class="w3-padding-large w3-button" title="More">GAMES <i class="fa fa-caret-down"></i></button>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <a href="/werewolf" class="w3-bar-item w3-button">WEREWOLF</a>
+                    <a href="/avalon" class="w3-bar-item w3-button">AVALON</a>
+                </div>
+            </div>
+            <a href="/tools" class="w3-bar-item w3-button w3-padding-large w3-hide-small">TOOLS</a>
+            {% if 'user' not in request.session or request.session.user == None %}
+            <a href="/login" class="w3-padding-large w3-hide-small w3-right">LOG IN</a>
+            {% else %}
+            <a href="/logout" class="w3-padding-large w3-hide-small w3-right">LOG OUT</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+    <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+        <a href="/events" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">EVENTS</a>
+        <a href="/werewolf" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">WEREWOLF</a>
+        <a href="/avalon" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">AVALON</a>
+        <a href="/tools" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">TOOLS</a>
+        {% if 'user' not in request.session or request.session.user == None %}
+        <a href="/login" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">LOG IN</a>
+        {% else %}
+        <a href="/logout" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">LOG OUT</a>
+        {% endif %}
+    </div>
+
+
+    <!-- The Event Section -->
+    <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px">
+        <h2 class="w3-wide">Tool: Shuffle</h2>
+        <br>
+        <table class="players_table">
+            <thead>
+                <tr>
+                    <th width="130px">Order</th>
+                    <th>Name</th>
+                    <th width="120px">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="display_table">
+                {% for player in players %}
+                <tr id="row{{forloop.counter0}}">
+                    <td>{{player.order_number}}</td>
+                    <td>{{player.name}}</td>
+                    <td>
+                        <form action="/remove_player/{{player.id}}">
+                            <button id="remove_person" type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <form action="/tools" method="post" id="add_person_here">
+            {% csrf_token %}
+            <input type="text" name="name"><button id="add_person" type="submit">Add</button>
+        </form>
+        <br>
+        <form action="/shuffle" method="post">
+            {% csrf_token %}
+            <button id="shuffle" type="submit">Shuffle</button>
+        </form>
+    </div>
+
+    <script>
+
+        // Used to toggle the menu on small screens when clicking on the menu button
+        function myFunction() {
+            var x = document.getElementById("navDemo");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        var modal = document.getElementById('ticketModal');
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

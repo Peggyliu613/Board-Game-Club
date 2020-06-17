@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy Happy Board Game Club</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css'%}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+        table,
+        td,
+        th {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="w3-top">
+        <div class="w3-bar w3-black w3-card">
+            <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
+                href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                    class="fa fa-bars"></i></a>
+            <a href="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+            <a href="/events" class="w3-bar-item w3-button w3-padding-large w3-hide-small">EVENTS</a>
+            <div class="w3-dropdown-hover w3-hide-small">
+                <button class="w3-padding-large w3-button" title="More">GAMES <i class="fa fa-caret-down"></i></button>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                    <a href="/werewolf" class="w3-bar-item w3-button">WEREWOLF</a>
+                    <a href="/avalon" class="w3-bar-item w3-button">AVALON</a>
+                </div>
+            </div>
+            <a href="/tools" class="w3-bar-item w3-button w3-padding-large w3-hide-small">TOOLS</a>
+            {% if 'user' not in request.session or request.session.user == None %}
+            <a href="/login" class="w3-padding-large w3-hide-small w3-right">LOG IN</a>
+            {% else %}
+            <a href="/logout" class="w3-padding-large w3-hide-small w3-right">LOG OUT</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+    <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+        <a href="/events" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">EVENTS</a>
+        <a href="/werewolf" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">WEREWOLF</a>
+        <a href="/avalon" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">AVALON</a>
+        <a href="/tools" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">TOOLS</a>
+        {% if 'user' not in request.session or request.session.user == None %}
+        <a href="/login" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">LOG IN</a>
+        {% else %}
+        <a href="/logout" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">LOG OUT</a>
+        {% endif %}
+    </div>
+
+
+    <!-- The Event Section -->
+    <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px">
+        <h2 class="w3-wide">Game: Avalon</h2><br>
+        <img src="{% static 'images/avalon.png' %}" alt="werewolf" width="200px">
+        <h4 class="w3-justify">Rules:</h4>
+        <p class="w3-justify">Avalon is a social deductive role-playing card-based game. The game's premise involves a
+            war with Arthurian Knights against the evil Mordred and his minions.</p>
+        <p class="w3-justify">The game configuration is based on the number of players, with evil side being minority
+            and good side being majority.</p>
+        <p class="w3-justify">At the start of the game, each player is assigned with a role. There are a total of 5
+            missions. In each mission, there are 5 chances to decide a set of players to go on the mission. Clockwise,
+            each player has a chance to select the set, but the set of players will go on mission only if they get the
+            majority votes of approval. However, if the players cannot decide the set of players in all 5 chances, evil
+            side will win that mission.</p>
+        <p class="w3-justify">When doing a mission, each selected player is given a ‘fail’ and a ‘succeed’ card. The
+            good player can only select ‘succeed’ and the evil player has the freedom to choose either one. If any of
+            the card is ‘fail’, the mission is considered won by evil side.</p>
+        <p class="w3-justify">Eventually, if the evil side wins the 3rd mission, the victory goes to the evil side. On
+            the other hand, if the good side wins the 3rd mission, Assassin has the final chance to assassinate Merlin.
+            If Assassin is able to find Merlin, evil side wins; otherwise the good side wins.</p>
+
+        <br><br><br>
+
+        <h4 class="w3-justify">Roles using in this game:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Character</th>
+                    <th>Function</th>
+                </tr>
+            </thead>
+            <tbody id="display_table">
+            </tbody>
+        </table>
+        <br><br><br>
+
+        <h4 class="w3-justify">Configuration:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Character</th>
+                    <th>Function</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for character in all_characters %}
+                <tr>
+                    <td><input id="checkbox{{forloop.counter0}}" type="checkbox" name="{{character.id}}"></td>
+                    <td id="character{{forloop.counter0}}">{{character.character}}</td>
+                    <td id="function{{forloop.counter0}}">{{character.function}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <input id="add" type="submit" value="Add">
+
+    </div>
+
+    <script>
+        // Used to toggle the menu on small screens when clicking on the menu button
+        function myFunction() {
+            var x = document.getElementById("navDemo");
+            if (x.className.indexOf("w3-show") == -1) {
+                x.className += " w3-show";
+            } else {
+                x.className = x.className.replace(" w3-show", "");
+            }
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        var modal = document.getElementById('ticketModal');
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        //
+        $('#add').click(function () {
+            let s = "";
+
+            for (let i = 0; i < {{ all_characters.count }}; i++) {
+            if ($("#checkbox" + i).prop("checked") == true) {
+                s += "<tr>"
+                    + "<td>" + $("#character" + i).html() + "</td>"
+                    + "<td>" + $("#function" + i).html() + "</td>"
+                    + "</tr>"
+            }
+        }
+        $("#display_table").html(s)
+        })
+    </script>
+</body>
+
+</html>
